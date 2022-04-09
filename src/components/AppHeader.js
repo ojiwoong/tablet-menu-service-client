@@ -40,7 +40,7 @@ const AppHeader = () => {
             <CNavLink href="/#/base/carts">장바구니</CNavLink>
           </CNavItem>
           <CNavItem>
-            <CNavLink href="#">결제하기</CNavLink>
+            <CNavLink href="#">계산서</CNavLink>
           </CNavItem>
           <CNavItem>
             <CNavLink onClick={logout}>로그아웃</CNavLink>

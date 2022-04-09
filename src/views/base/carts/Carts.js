@@ -10,31 +10,26 @@ import {
 } from '@coreui/react'
 
 import axios from 'axios'
+import CartList from './CartList'
 
 const Carts = () => {
-  const [menuData, setMenuData] = useState([])
+  const [cartData, setCartData] = useState(JSON.parse(localStorage.getItem('carts')))
+  const [totalAmount, setTotalAmount] = useState(0)
 
   useEffect(() => {
-    const getMenu = async () => {
-      const url = `${process.env.REACT_APP_MENU_API_URL}/menus`
+    const calTotalAmount = () => {
+      let total = 0
 
-      axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem(
-        'accessToken',
-      )}`
+      cartData &&
+        cartData.forEach((cart, idx) => {
+          total += cart.count * cart.price
+        })
 
-      try {
-        const response = await axios.get(url)
-
-        const { data } = response
-
-        setMenuData(data)
-      } catch (error) {
-        alert('메뉴 조회 에러')
-        console.log(error.response)
-      }
+      return total
     }
-    getMenu()
-  }, [])
+
+    setTotalAmount(calTotalAmount())
+  }, [cartData])
 
   function priceToString(price) {
     return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
@@ -62,30 +57,23 @@ const Carts = () => {
               <CTableHeaderCell scope="col"></CTableHeaderCell>
               <CTableHeaderCell scope="col">금액</CTableHeaderCell>
               <CTableHeaderCell scope="col">총 금액</CTableHeaderCell>
+              <CTableHeaderCell scope="col">삭제</CTableHeaderCell>
             </CTableRow>
           </CTableHead>
-          <CTableBody>
-            <CTableRow>
-              <CTableDataCell scope="row">소고기타타기</CTableDataCell>
-              <CTableDataCell scope="row">
-                <CButton color="dark" shape="rounded-pill">
-                  -
-                </CButton>
-              </CTableDataCell>
-              <CTableDataCell>3</CTableDataCell>
-              <CTableDataCell scope="row">
-                <CButton color="dark" shape="rounded-pill">
-                  +
-                </CButton>
-              </CTableDataCell>
-              <CTableDataCell scope="row">3,000</CTableDataCell>
-              <CTableDataCell scope="row">9,000</CTableDataCell>
-            </CTableRow>
-          </CTableBody>
+          {cartData &&
+            cartData.map((cart, idx) => (
+              <CartList
+                cart={cart}
+                idx={idx}
+                setCartData={setCartData}
+                setTotalAmount={setTotalAmount}
+                key={idx}
+              />
+            ))}
         </CTable>
         <div className="row">
           <div className="col-sm">
-            <h2>합계 금액 : 23,000</h2>
+            <h2>합계 금액 : {priceToString(totalAmount)} 원</h2>
           </div>
           <div className="col-sm"></div>
         </div>
