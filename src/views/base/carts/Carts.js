@@ -11,6 +11,7 @@ import {
 
 import axios from 'axios'
 import CartList from './CartList'
+import { getAllByPlaceholderText } from '@testing-library/react'
 
 const Carts = () => {
   const [cartData, setCartData] = useState(JSON.parse(localStorage.getItem('carts')))
@@ -35,6 +36,58 @@ const Carts = () => {
     return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
   }
 
+  // 주문하기
+  const order = async () => {
+    const carts = JSON.parse(localStorage.getItem('carts'))
+
+    if (carts === null || carts.length === 0) {
+      alert('장바구니에 메뉴가 없습니다.')
+      return
+    }
+
+    if (!window.confirm('해당 메뉴들을 주문하시겠습니까?')) {
+      return
+    }
+
+    carts.totalAmount = totalAmount
+
+    // 서버에 보낼 데이터 생성
+    const orderMenuListJsonAry = new Array()
+
+    carts.forEach((cart) => {
+      const orderMenuJson = new Object()
+      orderMenuJson.menuId = cart.id
+      orderMenuJson.quantity = cart.count
+      orderMenuJson.amount = cart.price
+
+      orderMenuListJsonAry.push(orderMenuJson)
+    })
+
+    const orderJson = new Object()
+    orderJson.orderMenuList = orderMenuListJsonAry
+    orderJson.totalAmount = totalAmount
+
+    const url = `${process.env.REACT_APP_ORDER_API_URL}/orders/${localStorage.getItem('userId')}`
+
+    try {
+      const response = await axios.post(url, orderJson)
+      const { data, status } = response
+
+      if (status === 201) {
+        alert('주문 완료되었습니다.')
+        localStorage.removeItem('carts')
+        setCartData([])
+        console.log(data)
+      } else {
+        alert('잘못된 응답코드 입니다.')
+        console.log(response)
+      }
+    } catch (error) {
+      alert('주문 에러')
+      console.log(error.response)
+    }
+  }
+
   return (
     <>
       <div className="container">
@@ -43,7 +96,7 @@ const Carts = () => {
             <h1>장바구니</h1>
           </div>
           <div className="col-4" style={{ textAlign: 'right', margin: '30px' }}>
-            <CButton color="primary" shape="rounded-0">
+            <CButton color="primary" shape="rounded-0" onClick={order}>
               주문하기
             </CButton>
           </div>

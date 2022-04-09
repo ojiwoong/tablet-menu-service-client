@@ -14,10 +14,10 @@ const MenuList = (props) => {
     let count = 1
 
     carts.forEach((cart, idx) => {
+      // 같은 메뉴 아이디인 경우
       if (menu.id === cart.id) {
         isExits = true
         carts[idx].count = cart.count + 1
-        carts[idx].price = cart.price + menu.price
         count = carts[idx].count
       }
     })
