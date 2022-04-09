@@ -23,6 +23,7 @@ const Login = () => {
 
   const navigate = useNavigate()
 
+  // 로그인
   const loginClickHandler = async () => {
     // const url = `http://localhost:8000/auth-service/login`
     const url = `${process.env.REACT_APP_AUTH_API_URL}/login`
@@ -48,14 +49,25 @@ const Login = () => {
     }
   }
 
+  // 로그인 아이디 폼 변경 핸들러
   const loginIdChangeHandler = (e) => {
     const { value } = e.target
     setLoginId(value)
   }
 
+  // 로그인 아이디 폼 변경 핸들러
   const passwordChangeHandler = (e) => {
     const { value } = e.target
     setPassword(value)
+  }
+
+  const enterkey = () => {
+    const enterKeyCode = 13
+
+    if (window.event.keyCode === enterKeyCode) {
+      // 엔터키 로그인
+      loginClickHandler()
+    }
   }
 
   return (
@@ -80,6 +92,7 @@ const Login = () => {
                         autoComplete="username"
                         value={loginId}
                         onChange={loginIdChangeHandler}
+                        onKeyUp={enterkey}
                       />
                     </CInputGroup>
                     <CInputGroup className="mb-4">
@@ -91,6 +104,7 @@ const Login = () => {
                         placeholder="비밀번호"
                         autoComplete="current-password"
                         onChange={passwordChangeHandler}
+                        onKeyUp={enterkey}
                       />
                     </CInputGroup>
                     <CRow>
