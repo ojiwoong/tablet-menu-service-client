@@ -43,7 +43,9 @@ const AppHeader = () => {
             <CNavLink href="/#/base/bill">계산서</CNavLink>
           </CNavItem>
           <CNavItem>
-            <CNavLink onClick={logout}>로그아웃</CNavLink>
+            <CNavLink onClick={logout} style={{ cursor: 'pointer' }}>
+              로그아웃
+            </CNavLink>
           </CNavItem>
         </CHeaderNav>
       </CContainer>

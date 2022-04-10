@@ -3,11 +3,23 @@ import { CCard, CCardBody, CCardImage, CCardText, CCardTitle, CCol, CRow } from 
 
 import axios from 'axios'
 import MenuList from './MenuList'
+import { useNavigate } from 'react-router-dom'
 
 const Menus = () => {
+  const navigate = useNavigate()
+
   const [menuData, setMenuData] = useState([])
 
   useEffect(() => {
+    // JWT 토큰값이 없을경우 로그인 페이지로 이동
+    if (
+      localStorage.getItem('accessToken') === '' ||
+      localStorage.getItem('accessToken') === null
+    ) {
+      navigate('/')
+      return
+    }
+
     // 메뉴 조회
     const getMenu = async () => {
       const url = `${process.env.REACT_APP_MENU_API_URL}/menus`

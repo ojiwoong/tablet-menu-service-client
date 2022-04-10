@@ -16,11 +16,17 @@ function priceToString(price) {
 
 const BillList = (props) => {
   const { order, orderMenu } = props
+
+  function convertHourMinSec(time) {
+    return time.split('T')[1].split('.')[0]
+  }
+
   return (
     <>
       <CTableBody>
         <CTableRow>
           <CTableHeaderCell scope="row">{order.id}</CTableHeaderCell>
+          <CTableDataCell>{convertHourMinSec(orderMenu.createdAt)}</CTableDataCell>
           <CTableDataCell>{orderMenu.menuEntity.name}</CTableDataCell>
           <CTableDataCell>{orderMenu.quantity}</CTableDataCell>
           <CTableDataCell>{priceToString(orderMenu.menuEntity.price)}</CTableDataCell>

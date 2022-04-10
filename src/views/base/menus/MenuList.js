@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { CCard, CCardBody, CCardImage, CCardText, CCardTitle, CCol, CRow } from '@coreui/react'
 
-import axios from 'axios'
-
 const MenuList = (props) => {
   const { menu } = props
 
@@ -52,8 +50,8 @@ const MenuList = (props) => {
   }
 
   return (
-    <CCol xs onClick={() => PutMenu(menu)}>
-      <CCard className="h-100">
+    <CCol xs>
+      <CCard className="h-100" onClick={() => PutMenu(menu)} style={{ cursor: 'pointer' }}>
         <CCardImage orientation="top" src={menu.imageUrl} />
         <CCardBody>
           <CCardTitle>{menu.name}</CCardTitle>

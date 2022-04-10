@@ -12,12 +12,24 @@ import {
 import axios from 'axios'
 import CartList from './CartList'
 import { getAllByPlaceholderText } from '@testing-library/react'
+import { useNavigate } from 'react-router-dom'
 
 const Carts = () => {
+  const navigate = useNavigate()
+
   const [cartData, setCartData] = useState(JSON.parse(localStorage.getItem('carts')))
   const [totalAmount, setTotalAmount] = useState(0)
 
   useEffect(() => {
+    // JWT 토큰값이 없을경우 로그인 페이지로 이동
+    if (
+      localStorage.getItem('accessToken') === '' ||
+      localStorage.getItem('accessToken') === null
+    ) {
+      navigate('/')
+      return
+    }
+
     const calTotalAmount = () => {
       let total = 0
 
@@ -69,12 +81,14 @@ const Carts = () => {
 
     const url = `${process.env.REACT_APP_ORDER_API_URL}/orders/${localStorage.getItem('userId')}`
 
+    axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem('accessToken')}`
+
     try {
       const response = await axios.post(url, orderJson)
       const { data, status } = response
 
       if (status === 201) {
-        alert('주문 완료되었습니다.')
+        alert('정상적으로 주문되었습니다.')
         localStorage.removeItem('carts')
         setCartData([])
         console.log(data)
@@ -126,7 +140,7 @@ const Carts = () => {
         </CTable>
         <div className="row">
           <div className="col-sm">
-            <h2>합계 금액 : {priceToString(totalAmount)} 원</h2>
+            <h2>총 주문금액 : {priceToString(totalAmount)} 원</h2>
           </div>
           <div className="col-sm"></div>
         </div>
